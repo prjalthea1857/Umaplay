@@ -21,6 +21,7 @@ from core.utils.date_uma import date_index as uma_date_index
 from core.utils.waiter import PollConfig, Waiter
 from core.utils.event_processor import CATALOG_JSON, Catalog, UserPrefs
 from core.utils.race_index import RaceIndex
+from core.utils.telemetry import TelemetryLogger
 
 class AgentScenario(ABC):
     waiter: Waiter
@@ -62,6 +63,9 @@ class AgentScenario(ABC):
         self.prioritize_g1 = bool(prioritize_g1)
         self._skip_training_race_once = False
         self.plan_races = dict(plan_races or {})
+        
+        trainee_name = event_prefs.preferred_trainee_name if event_prefs else None
+        self.telemetry = TelemetryLogger(trainee_name=trainee_name)
 
         self.scenario = Settings.ACTIVE_SCENARIO
         self.skill_memory_path = Settings.resolve_skill_memory_path(self.scenario)
@@ -91,7 +95,7 @@ class AgentScenario(ABC):
         self.skill_memory = SkillMemoryManager(
             self.skill_memory_path, scenario=self.scenario
         )
-        self.race = RaceFlow(self.ctrl, self.ocr, self.yolo_engine, self.waiter)
+        self.race = RaceFlow(self.ctrl, self.ocr, self.yolo_engine, self.waiter, telemetry=self.telemetry)
 
         self.lobby = lobby_flow
         self.skills_flow = SkillsFlow(
@@ -100,6 +104,7 @@ class AgentScenario(ABC):
             self.yolo_engine,
             self.waiter,
             skill_memory=self.skill_memory,
+            telemetry=self.telemetry,
         )
 
         self._log_skill_memory_load()
@@ -107,7 +112,7 @@ class AgentScenario(ABC):
         catalog = Catalog.load(CATALOG_JSON)
         # Prefer prefs coming from config.json (passed by main); fallback to legacy file.
         self.event_flow = EventFlow(
-            self.ctrl, self.ocr, self.yolo_engine, self.waiter, catalog, event_prefs
+            self.ctrl, self.ocr, self.yolo_engine, self.waiter, catalog, event_prefs, telemetry=self.telemetry
         )
 
         self.claw_game = ClawGame(self.ctrl, self.yolo_engine)
@@ -388,7 +393,7 @@ class AgentScenario(ABC):
 
         skills_result: SkillsBuyResult | None = None
         try:
-            skills_result = self.skills_flow.buy(targets)
+            skills_result = self.skills_flow.buy(targets, turn=self.lobby.state.turn)
         except Exception as e:
             logger_uma.error("[post-hint] skills_flow.buy failed: %s", e)
 

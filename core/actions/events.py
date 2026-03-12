@@ -210,6 +210,7 @@ class EventFlow:
         *,
         conf_min_choice: float = 0.60,
         debug_visual: bool = False,
+        telemetry=None,
     ) -> None:
         self.ctrl = ctrl
         self.ocr = ocr
@@ -219,6 +220,7 @@ class EventFlow:
         self.prefs = prefs
         self.conf_min_choice = conf_min_choice
         self.debug_visual = debug_visual
+        self.telemetry = telemetry
         # Track last event clicked to detect confirmation phases (e.g., Acupuncturist)
         self._last_event_clicked: Optional[Tuple[str, int, int]] = None  # (key_step, pick, expected_n)
 
@@ -613,6 +615,14 @@ class EventFlow:
             str(current_energy),
             str(max_energy_cap),
         )
+
+        if self.telemetry:
+            self.telemetry.log_event_choice(
+                event_name=best.rec.event_name or best.rec.key_step,
+                choices_available=expected_n,
+                choice_made_index=pick,
+                strategy_used="confirmation_override" if debug.get("confirmation_phase_override") else "normal"
+            )
 
         return EventDecision(
             matched_key=best.rec.key,

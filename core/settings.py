@@ -65,6 +65,8 @@ class Settings:
     DEBUG = _env_bool("DEBUG", default=True)
     HOST = "127.0.0.1"
     PORT = 8000
+    
+    ENABLE_TELEMETRY = _env_bool("ENABLE_TELEMETRY", default=True)
 
     _ROOT_DIR = Path(__file__).resolve().parents[1]  # repo root (parent of /core)
     RACE_DATA_PATH = _ROOT_DIR / "datasets" / "in_game" / "races.json"
@@ -86,6 +88,7 @@ class Settings:
     MODELS_DIR: Path = Path(_env("MODELS_DIR") or (ROOT_DIR / "models"))
     DEBUG_DIR: Path = Path(_env("DEBUG_DIR") or (ROOT_DIR / "debug"))
     PREFS_DIR: Path = Path(_env("PREFS_DIR") or (ROOT_DIR / "prefs"))
+    TELEMETRY_DIR: Path = Path(_env("TELEMETRY_DIR") or (ROOT_DIR / "datasets" / "telemetry"))
     RUNTIME_SKILL_MEMORY_PATH: Path = Path(
         _env("RUNTIME_SKILL_MEMORY_PATH")
         or (PREFS_DIR / "runtime_skill_memory.json")

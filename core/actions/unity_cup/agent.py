@@ -341,6 +341,21 @@ class AgentUnityCup(AgentScenario):
                 # Keep skill memory aligned with latest state
                 self._refresh_skill_memory()
 
+                # Log turn state
+                try:
+                    self.telemetry.log_turn_state(
+                        turn=self.lobby.state.turn,
+                        energy=self.lobby.state.energy,
+                        skill_pts=self.lobby.state.skill_pts,
+                        stats=self.lobby.state.stats,
+                        mood=self.lobby.state.mood,
+                        is_summer=self.lobby.state.is_summer,
+                        infirmary_on=self.lobby.state.infirmary_on,
+                        goal=self.lobby.state.goal,
+                    )
+                except Exception:
+                    pass
+
                 # Optimization, only buy in Raceday (where you can actually lose the career)
                 self.lobby.state.skill_pts = extract_skill_points(self.ocr, img, dets)
                 logger_uma.info(
@@ -377,7 +392,7 @@ class AgentUnityCup(AgentScenario):
                     if should_open_skills or self._first_race_day:
                         self._first_race_day = False
                         self.lobby._go_skills()
-                        skills_result = self.skills_flow.buy(self.skill_list)
+                        skills_result = self.skills_flow.buy(self.skill_list, turn=self.lobby.state.turn)
                         self._last_skill_buy_succeeded = (
                             skills_result.status is SkillsBuyStatus.SUCCESS
                         )
@@ -567,6 +582,22 @@ class AgentUnityCup(AgentScenario):
                 self.patience = 0
                 self.claw_turn = 0
                 self._iterations_turn += 1
+                
+                # Log turn state
+                try:
+                    self.telemetry.log_turn_state(
+                        turn=self.lobby.state.turn,
+                        energy=self.lobby.state.energy,
+                        skill_pts=self.lobby.state.skill_pts,
+                        stats=self.lobby.state.stats,
+                        mood=self.lobby.state.mood,
+                        is_summer=self.lobby.state.is_summer,
+                        infirmary_on=self.lobby.state.infirmary_on,
+                        goal=self.lobby.state.goal,
+                    )
+                except Exception:
+                    pass
+
                 outcome, reason = self.lobby.process_turn()
                 # outcome = "TO_TRAINING"
                 # self.lobby._go_training_screen_from_lobby(img, dets)
@@ -699,11 +730,30 @@ class AgentUnityCup(AgentScenario):
                 continue
 
             if screen == "FinalScreen":
+                # Sanity guard: career cannot end this early.
+                # Preseason lobbies can false-positive as FinalScreen when YOLO
+                # mis-labels the Unity Cup Race Day tile as button_pink.
+                # Only accept FinalScreen if the turn is confirmed high enough;
+                # None or low turns mean we are still in preseason.
+                _cur_turn = self.lobby.state.turn
+                if _cur_turn is not None:
+                    try:
+                        _cur_turn = int(_cur_turn)
+                    except (TypeError, ValueError):
+                        _cur_turn = None
+                if _cur_turn is None or _cur_turn <= 10:
+                    logger_uma.warning(
+                        "[agent] FinalScreen at turn %s — likely preseason false positive; skipping.",
+                        _cur_turn,
+                    )
+                    sleep(1.0)
+                    continue
+
                 self.claw_turn = 0
                 # Only if skill list defined
                 if len(self.skill_list) > 0 and self.lobby._go_skills():
                     sleep(1.0)
-                    final_result = self.skills_flow.buy(self.skill_list)
+                    final_result = self.skills_flow.buy(self.skill_list, turn=self.lobby.state.turn)
                     self._last_skill_buy_succeeded = (
                         final_result.status is SkillsBuyStatus.SUCCESS
                     )
@@ -712,7 +762,7 @@ class AgentUnityCup(AgentScenario):
                         final_result.status.value,
                         final_result.exit_recovered,
                     )
-                    
+
                     # pick = det_filter(dets, ["lobby_skills"])[-1]
                     # x1 = pick["xyxy"][0]
                     # y1 = pick["xyxy"][1]
@@ -723,6 +773,15 @@ class AgentUnityCup(AgentScenario):
                     # x1 += btn_width + btn_width // 10
                     # x2 += btn_width + btn_width // 10
                     # self.ctrl.click_xyxy_center((x1, y1, x2, y2), clicks=1, jitter=1)
+
+                try:
+                    self.telemetry.log_career_end(
+                        final_stats=self.lobby.state.stats,
+                        final_skill_pts=self.lobby.state.skill_pts,
+                    )
+                except Exception:
+                    pass
+                
                 self.is_running = False  # end of career
                 logger_uma.info("Detected end of career")
                 try:
@@ -782,6 +841,16 @@ class AgentUnityCup(AgentScenario):
                     "[training] Failed to click training tile idx=%s", tidx
                 )
                 return
+            
+            try:
+                self.telemetry.log_training_action(
+                    turn=self.lobby.state.turn,
+                    action_type=action.name,
+                    action_details={"tile_idx": tidx},
+                )
+            except Exception:
+                pass
+            
             # Optional slow-path: after landing on a hint tile, defer re-check until back in lobby
             supports_for_recheck: List[Dict[str, Any]] = []
             try:

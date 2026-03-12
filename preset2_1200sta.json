@@ -1,0 +1,217 @@
+{
+  "id": "fb715709-4c0e-4ea1-9be8-f4293713e120",
+  "name": "Preset 2",
+  "group": null,
+  "priorityStats": [
+    "SPD",
+    "STA",
+    "WIT",
+    "PWR",
+    "GUTS"
+  ],
+  "targetStats": {
+    "SPD": 1200,
+    "STA": 1200,
+    "PWR": 800,
+    "GUTS": 300,
+    "WIT": 400
+  },
+  "minimalMood": "NORMAL",
+  "juniorStyle": null,
+  "skillsToBuy": [],
+  "skillPtsCheck": 600,
+  "plannedRaces": {},
+  "plannedRacesTentative": {},
+  "raceIfNoGoodValue": false,
+  "prioritizeHint": false,
+  "weakTurnSv": 1.75,
+  "racePrecheckSv": 3.5,
+  "lobbyPrecheckEnable": false,
+  "juniorMinimalMood": null,
+  "goalRaceForceTurns": 5,
+  "unityCupAdvanced": {
+    "burstAllowedStats": [
+      "SPD",
+      "STA",
+      "PWR",
+      "WIT"
+    ],
+    "scores": {
+      "rainbowCombo": 0.5,
+      "whiteSpiritFill": 0.4,
+      "whiteSpiritExploded": 0.13,
+      "whiteComboPerFill": 0.25,
+      "blueSpiritEach": 0.5,
+      "blueComboPerExtraFill": 0.25
+    },
+    "multipliers": {
+      "juniorClassic": {
+        "white": 1.5,
+        "whiteCombo": 1.5,
+        "blueCombo": 1.5
+      },
+      "senior": {
+        "white": 1,
+        "whiteCombo": 1,
+        "blueCombo": 1
+      }
+    },
+    "opponentSelection": {
+      "race1": 2,
+      "race2": 1,
+      "race3": 1,
+      "race4": 1,
+      "defaultUnknown": 2
+    }
+  },
+  "event_setup": {
+    "supports": [
+      {
+        "slot": 0,
+        "name": "Kitasan Black",
+        "rarity": "SSR",
+        "attribute": "SPD",
+        "priority": {
+          "enabled": true,
+          "scoreBlueGreen": 0.75,
+          "scoreOrangeMax": 0.5,
+          "skillsRequiredForPriority": [],
+          "recheckAfterHint": false
+        },
+        "rewardPriority": [
+          "skill_pts",
+          "stats",
+          "hints"
+        ],
+        "avoidEnergyOverflow": true
+      },
+      {
+        "slot": 1,
+        "name": "Sweep Tosho",
+        "rarity": "SR",
+        "attribute": "SPD",
+        "priority": {
+          "enabled": true,
+          "scoreBlueGreen": 0.75,
+          "scoreOrangeMax": 0.5,
+          "skillsRequiredForPriority": [],
+          "recheckAfterHint": false
+        },
+        "rewardPriority": [
+          "skill_pts",
+          "stats",
+          "hints"
+        ],
+        "avoidEnergyOverflow": true
+      },
+      {
+        "slot": 2,
+        "name": "King Halo",
+        "rarity": "SR",
+        "attribute": "SPD",
+        "priority": {
+          "enabled": true,
+          "scoreBlueGreen": 0.75,
+          "scoreOrangeMax": 0.5,
+          "skillsRequiredForPriority": [],
+          "recheckAfterHint": false
+        },
+        "rewardPriority": [
+          "skill_pts",
+          "stats",
+          "hints"
+        ],
+        "avoidEnergyOverflow": true
+      },
+      {
+        "slot": 3,
+        "name": "Zenno Rob Roy",
+        "rarity": "SR",
+        "attribute": "STA",
+        "priority": {
+          "enabled": true,
+          "scoreBlueGreen": 0.75,
+          "scoreOrangeMax": 0.5,
+          "skillsRequiredForPriority": [],
+          "recheckAfterHint": false
+        },
+        "rewardPriority": [
+          "skill_pts",
+          "stats",
+          "hints"
+        ],
+        "avoidEnergyOverflow": true
+      },
+      {
+        "slot": 4,
+        "name": "Tazuna Hayakawa",
+        "rarity": "SSR",
+        "attribute": "PAL",
+        "priority": {
+          "enabled": true,
+          "scoreBlueGreen": 0.75,
+          "scoreOrangeMax": 0.5,
+          "skillsRequiredForPriority": [],
+          "recheckAfterHint": false
+        },
+        "rewardPriority": [
+          "skill_pts",
+          "stats",
+          "hints"
+        ],
+        "avoidEnergyOverflow": true
+      },
+      {
+        "slot": 5,
+        "name": "Super Creek",
+        "rarity": "SSR",
+        "attribute": "STA",
+        "priority": {
+          "enabled": true,
+          "scoreBlueGreen": 0.75,
+          "scoreOrangeMax": 0.5,
+          "skillsRequiredForPriority": [],
+          "recheckAfterHint": false
+        },
+        "rewardPriority": [
+          "skill_pts",
+          "stats",
+          "hints"
+        ],
+        "avoidEnergyOverflow": true
+      }
+    ],
+    "scenario": {
+      "name": "Unity Cup",
+      "avoidEnergyOverflow": true,
+      "rewardPriority": [
+        "skill_pts",
+        "stats",
+        "hints"
+      ]
+    },
+    "trainee": {
+      "name": "Air Groove",
+      "avoidEnergyOverflow": true,
+      "rewardPriority": [
+        "skill_pts",
+        "stats",
+        "hints"
+      ]
+    },
+    "prefs": {
+      "overrides": {},
+      "patterns": [],
+      "defaults": {
+        "support": 1,
+        "trainee": 1,
+        "scenario": 1
+      },
+      "rewardPriority": [
+        "skill_pts",
+        "stats",
+        "hints"
+      ]
+    }
+  }
+}

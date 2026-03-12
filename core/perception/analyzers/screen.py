@@ -312,8 +312,13 @@ def classify_screen_unity_cup(
             "pal_available": has_pal,
         }
 
+    # FinalScreen: lobby_skills + pink button with very few detections.
+    # Guard against the Unity Cup preseason lobby, which also shows lobby_skills +
+    # a button YOLO reads as button_pink (the Race Day tile).  If ANY race_race_day
+    # candidate is present (even below primary threshold) this is NOT a FinalScreen.
     if (
         len(dets) <= 3 and has_lobby_skills and has_button_pink
+        and not race_day_candidates
     ):
         return "FinalScreen", {
             "has_lobby_skills": has_lobby_skills,

@@ -247,6 +247,37 @@ def decide_action_training(
     # -----------------------------
 
     # -------------------------------------------------
+    # Friendship Rush (Junior Year)
+    # During Junior Year, prioritize filling all non-PAL support card gauges to orange
+    # before switching to rainbow training priority.
+    # PAL/tazuna, director, and reporter are excluded automatically because they never
+    # contribute to sv_by_type["cards"] (they are handled with `continue` in compute_support_values).
+    # Exits when total blue/green count across all tiles drops to 0 (all gauges are orange/max).
+    # -------------------------------------------------
+    if is_junior_year(di) and not is_final_season(di) and energy_pct > energy_rest_gate_lo:
+        try:
+            total_bluegreen = sum(
+                int(round(float(r.get("sv_by_type", {}).get("cards", 0.0))))
+                for r in sv_rows
+            )
+            if total_bluegreen > 0:
+                best_bg_tile = None
+                best_bg_count = 0
+                for r in allowed_rows_filtered:
+                    bg = int(round(float(r.get("sv_by_type", {}).get("cards", 0.0))))
+                    if bg > best_bg_count:
+                        best_bg_count = bg
+                        best_bg_tile = int(r["tile_idx"])
+                if best_bg_tile is not None and best_bg_count >= 1:
+                    because(
+                        f"Friendship rush (Junior Year): tile {best_bg_tile} has {best_bg_count} blue/green card(s); "
+                        f"{total_bluegreen} total non-orange gauge(s) remaining → fill before rainbow priority"
+                    )
+                    return (TrainAction.TRAIN_MAX, best_bg_tile, "; ".join(reasons))
+        except Exception as _e:
+            because(f"Friendship rush check skipped: {_e}")
+
+    # -------------------------------------------------
     # Distribution-aware nudge (before step 1)
     # If a top-3 priority stat is undertrained vs. reference distribution
     # by ≥ (UNDERTRAIN_THRESHOLD)% and its best SV is within 1.5 of the best overall, pick it.
@@ -447,10 +478,14 @@ def decide_action_training(
 
         # (a) push any top-3 stat to 600 first
         for stat_name in top3_prio:
+            # Skip if already hitting user-defined cap
+            if stat_name in capped_stats and stat_name not in hint_override_stats:
+                continue
+
             curv = int(stats.get(stat_name, -1))
             if curv >= 0 and curv < 600:
                 idx600, sv600 = _best_tile_of_type(
-                    allowed_rows, stat_name, -1.0, tile_to_type
+                    allowed_rows_filtered, stat_name, -1.0, tile_to_type
                 )
                 if idx600 is not None:
                     because(
@@ -461,6 +496,10 @@ def decide_action_training(
         # (b) if all ≥ 600, pick the top-3 stat closest to 1200 but < 1170
         near_candidates = []
         for stat_name in top3_prio:
+            # Skip if already hitting user-defined cap
+            if stat_name in capped_stats and stat_name not in hint_override_stats:
+                continue
+
             curv = int(stats.get(stat_name, -1))
             if curv >= 0 and curv < 1170:
                 near_candidates.append((stat_name, curv))
@@ -468,7 +507,7 @@ def decide_action_training(
             # Choose the one with the largest current value (closest to 1200)
             target_stat = max(near_candidates, key=lambda kv: kv[1])[0]
             idx1170, sv1170 = _best_tile_of_type(
-                allowed_rows, target_stat, -1.0, tile_to_type
+                allowed_rows_filtered, target_stat, -1.0, tile_to_type
             )
             if idx1170 is not None:
                 because(
@@ -632,11 +671,15 @@ def decide_action_training(
                     )
     
     any_wit_rb = any_wit_rainbow(sv_rows, tile_to_type=tile_to_type)
-    idx_wit_1_5 = best_wit_tile(
-        sv_rows,
-        allowed_only=True,
-        min_sv=1.5,
-        tile_to_type=tile_to_type,
+    idx_wit_1_5 = (
+        None
+        if wit_capped_without_hint
+        else best_wit_tile(
+            sv_rows,
+            allowed_only=True,
+            min_sv=1.5,
+            tile_to_type=tile_to_type,
+        )
     )
     if any_wit_rb and idx_wit_1_5 is not None:
         because("WIT has rainbow support and SV ≥ 1.5 → Skip turn with good wit value")

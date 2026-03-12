@@ -3,7 +3,7 @@ from __future__ import annotations
 
 import random
 import time
-from typing import List, Optional, Sequence, Tuple, Dict
+from typing import Any, List, Optional, Sequence, Tuple, Dict
 from collections import Counter
 from dataclasses import dataclass
 from enum import Enum
@@ -71,11 +71,13 @@ class SkillsFlow:
         yolo_engine: IDetector,
         waiter: Waiter,
         skill_memory: Optional[SkillMemoryManager] = None,
+        telemetry=None,
     ) -> None:
         self.ctrl = ctrl
         self.ocr = ocr
         self.yolo_engine = yolo_engine
         self.waiter = waiter
+        self._telemetry = telemetry
         # Preload once for speed
         self._clf = ActiveButtonClassifier.load(Settings.IS_BUTTON_ACTIVE_CLF_PATH)
         self._skill_matcher = SkillMatcher.from_dataset()
@@ -97,6 +99,7 @@ class SkillsFlow:
         scroll_time_range: Tuple[int, int] = (6, 7),
         early_stop: bool = True,
         date_key: Optional[str] = None,
+        turn: Any = None,
     ) -> SkillsBuyResult:
         """
         End-to-end skill buying.
@@ -528,6 +531,16 @@ class SkillsFlow:
                     desired_counts.get(best_name, 1),
                 )
                 clicked_any = True
+                if self._telemetry:
+                    try:
+                        self._telemetry.log_skill_acquired(
+                            skill_name=canonical_name or best_name or "?",
+                            grade=grade_symbol,
+                            cost_clicks=click_counts,
+                            turn=turn,
+                        )
+                    except Exception:
+                        pass
 
         if seen_dirty and self._skill_memory:
             # Persist sightings even when no purchases occur in this pass.
