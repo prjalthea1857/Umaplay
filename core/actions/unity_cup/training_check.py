@@ -65,6 +65,11 @@ def compute_support_values(training_state: List[Dict]) -> List[Dict[str, Any]]:
     SCORE_BLUE_EACH = _score_value("blueSpiritEach", 0.50)
     SCORE_BLUE_COMBO_PER_EXTRA = _score_value("blueComboPerExtraFill", 0.25)
     SCORE_RAINBOW_COMBO = _score_value("rainbowCombo", 0.50)
+    # Extreme Spirit Burst (July 2026): purple variant, "significantly bigger stat boosts"
+    # and 0% failure rate. Detection is not live yet (see training_check_helpers.py); these
+    # knobs take effect automatically once spirit_color can be 'purple'.
+    SCORE_PURPLE_EACH = _score_value("purpleSpiritEach", 2.50)
+    SCORE_PURPLE_COMBO_PER_EXTRA = _score_value("purpleComboPerExtraFill", 1.00)
 
     UNITY_BLUEGREEN_HINT_DEFAULT = 0.50
     UNITY_ORANGE_HINT_DEFAULT = 0.25
@@ -283,12 +288,15 @@ def compute_support_values(training_state: List[Dict]) -> List[Dict[str, Any]]:
         # Split by color
         whites = [s for s in spirits if (s.get("spirit_color") == "white" or s.get("spirit_color") == "unknown")]
         blues  = [s for s in spirits if s.get("spirit_color") == "blue"]
+        purples = [s for s in spirits if s.get("spirit_color") == "purple"]
 
         # Per-spirit base value
         n_white_fill     = sum(1 for s in whites if s.get("has_flame") and s.get("flame_type") == "filling_up")
         n_white_exploded = sum(1 for s in whites if s.get("has_flame") and s.get("flame_type") == "exploded")
         n_blue_total     = len(blues)
         n_blue_fill      = sum(1 for s in blues  if s.get("has_flame") and s.get("flame_type") == "filling_up")
+        n_purple_total   = len(purples)
+        n_purple_fill    = sum(1 for s in purples if s.get("has_flame") and s.get("flame_type") == "filling_up")
 
         # White spirits: same rule as before (0.50 filling, 0.12 exploded)
         white_value = SCORE_WHITE_FILL * n_white_fill + SCORE_WHITE_EXPLODED * n_white_exploded
@@ -324,11 +332,29 @@ def compute_support_values(training_state: List[Dict]) -> List[Dict[str, Any]]:
             sv_by_type["spirit_combo_blue"] = sv_by_type.get("spirit_combo_blue", 0.0) + blue_combo
             notes.append(f"Blue spirit combo: +{blue_combo:.2f} (filling={n_blue_fill})")
 
+        # Extreme Spirit Burst (purple): regardless of flame, scored far above blue/white
+        # since it grants "significantly bigger stat boosts" and a 0% failure rate (see
+        # risk gating below). Detection is dormant until the classifier learns 'purple'.
+        purple_value = SCORE_PURPLE_EACH * n_purple_total
+        if purple_value > 0:
+            sv_total += purple_value
+            sv_by_type["spirits_purple"] = sv_by_type.get("spirits_purple", 0.0) + purple_value
+            notes.append(f"Extreme Spirit Burst (purple): +{purple_value:.2f} (count={n_purple_total})")
+
+        purple_combo = 0.0
+        if n_purple_fill > 1:
+            purple_combo = SCORE_PURPLE_COMBO_PER_EXTRA * (n_purple_fill - 1)
+            sv_total += purple_combo
+            sv_by_type["spirit_combo_purple"] = sv_by_type.get("spirit_combo_purple", 0.0) + purple_combo
+            notes.append(f"Extreme Spirit Burst combo: +{purple_combo:.2f} (filling={n_purple_fill})")
+
         sv_by_type["meta_white_fill_units"] = float(n_white_fill)
         sv_by_type["meta_white_exploded_units"] = float(n_white_exploded)
         sv_by_type["meta_blue_total_units"] = float(n_blue_total)
         sv_by_type["meta_blue_fill_units"] = float(n_blue_fill)
         sv_by_type["meta_blue_has_spirit"] = 1.0 if n_blue_total > 0 else 0.0
+        sv_by_type["meta_purple_total_units"] = float(n_purple_total)
+        sv_by_type["meta_has_extreme_spirit_burst"] = 1.0 if n_purple_total > 0 else 0.0
         # Preserve the base SV before any seasonal multipliers in policy.
         sv_by_type["meta_sv_base_unity"] = float(sv_total)
 
@@ -355,6 +381,12 @@ def compute_support_values(training_state: List[Dict]) -> List[Dict[str, Any]]:
         notes.append(
             f"Dynamic risk (base SV before seasonal multipliers): SV={sv_total:.2f} -> base {base_limit}% x {risk_mult:.2f} = {risk_limit}%"
         )
+
+        # Extreme Spirit Burst: 0% failure rate on the facility while active, regardless
+        # of the displayed failure% or computed risk limit.
+        if n_purple_total > 0:
+            allowed = True
+            notes.append("Extreme Spirit Burst active: 0% failure rate override, tile always allowed")
 
         greedy_hit = (sv_total >= GREEDY_THRESHOLD_UNITY_CUP) and allowed
         if greedy_hit:

@@ -170,8 +170,14 @@ def _get_spirit_clf():
 
 def _classify_spirit_icon(frame_bgr, xyxy, *, threshold: float = 0.51):
     """
-    Returns dict with keys: spirit_label ('spirit_blue'|'spirit_white'|'unknown'),
-    spirit_color ('blue'|'white'|'unknown'), spirit_confidence (0..1).
+    Returns dict with keys: spirit_label ('spirit_blue'|'spirit_white'|'spirit_purple'|'unknown'),
+    spirit_color ('blue'|'white'|'purple'|'unknown'), spirit_confidence (0..1).
+
+    'spirit_purple' identifies Extreme Spirit Burst (added July 2026). The classifier
+    bundle currently only knows 'spirit_blue'/'spirit_white' (see
+    models/unity_spirit_classes.json); this mapping is forward-compatible so ESB scoring
+    in training_check.py lights up automatically once the model is retrained with a
+    'spirit_purple' class and real screenshots.
     """
     clf = _get_spirit_clf()
     if clf is None or not xyxy:
@@ -198,7 +204,14 @@ def _classify_spirit_icon(frame_bgr, xyxy, *, threshold: float = 0.51):
         logger_uma.debug("Spirit color predict error: %s", e)
         label, conf = "unknown", 0.0
 
-    color = "blue" if label == "spirit_blue" else ("white" if label == "spirit_white" else "unknown")
+    if label == "spirit_blue":
+        color = "blue"
+    elif label == "spirit_white":
+        color = "white"
+    elif label == "spirit_purple":
+        color = "purple"
+    else:
+        color = "unknown"
     return {"spirit_label": label, "spirit_color": color, "spirit_confidence": conf}
 
 
