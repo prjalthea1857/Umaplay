@@ -66,8 +66,9 @@ def compute_support_values(training_state: List[Dict]) -> List[Dict[str, Any]]:
     SCORE_BLUE_COMBO_PER_EXTRA = _score_value("blueComboPerExtraFill", 0.25)
     SCORE_RAINBOW_COMBO = _score_value("rainbowCombo", 0.50)
     # Extreme Spirit Burst (July 2026): purple variant, "significantly bigger stat boosts"
-    # and 0% failure rate. Detection is not live yet (see training_check_helpers.py); these
-    # knobs take effect automatically once spirit_color can be 'purple'.
+    # and 0% failure rate. Detection is an uncalibrated HSV heuristic (see
+    # _detect_extreme_spirit_purple in training_check_helpers.py), not a trained
+    # classifier -- verify against real gameplay before trusting it fully.
     SCORE_PURPLE_EACH = _score_value("purpleSpiritEach", 2.50)
     SCORE_PURPLE_COMBO_PER_EXTRA = _score_value("purpleComboPerExtraFill", 1.00)
 
