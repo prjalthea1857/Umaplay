@@ -63,13 +63,12 @@ class RaceFlow:
     """
 
     def __init__(
-        self, ctrl: IController, ocr, yolo_engine: IDetector, waiter: Waiter, *, telemetry=None,
+        self, ctrl: IController, ocr, yolo_engine: IDetector, waiter: Waiter
     ) -> None:
         self.ctrl = ctrl
         self.ocr = ocr
         self.yolo_engine = yolo_engine
         self.waiter = waiter
-        self._telemetry = telemetry
         self._banner_matcher = get_race_banner_matcher()
         self._race_result_counters = {
             "loss_indicators": 0,
@@ -79,7 +78,6 @@ class RaceFlow:
         }
         self._waiting_for_manual_retry_decision = False
         self._last_failure_reason: RaceFailureReason = RaceFailureReason.NONE
-        self._last_race_name: Optional[str] = None
 
     def _ensure_in_raceday(
         self, *, reason: str | None = None, from_raceday=False
@@ -900,32 +898,12 @@ class RaceFlow:
             logger_uma.warning(
                 "[race] Stopping bot so user can choose Try Again or Cancel manually."
             )
-            if self._telemetry:
-                try:
-                    self._telemetry.log_race_result(
-                        turn=None,
-                        race_name=self._last_race_name,
-                        won=False,
-                        retried=False,
-                    )
-                except Exception:
-                    pass
             self._waiting_for_manual_retry_decision = True
             request_abort()
             return False
 
         if clicked_try_again:
             logger_uma.debug("[race] Lost the race, trying again.")
-            if self._telemetry:
-                try:
-                    self._telemetry.log_race_result(
-                        turn=None,
-                        race_name=self._last_race_name,
-                        won=False,
-                        retried=True,
-                    )
-                except Exception:
-                    pass
             self._handle_retry_transition()
             logger_uma.info(
                 "[race] Loss metrics after retry: %s",
@@ -942,18 +920,6 @@ class RaceFlow:
                     "[race] Retry expected but TRY AGAIN not clicked; continuing. | counters=%s",
                     self._race_result_counters,
                 )
-
-            # Log race result
-            if self._telemetry:
-                try:
-                    self._telemetry.log_race_result(
-                        turn=None,
-                        race_name=self._last_race_name,
-                        won=not loss_indicator_seen,
-                        retried=False,
-                    )
-                except Exception:
-                    pass
 
             logger_uma.info(
                 "[race] Continuing without retry (loss_indicator=%s) | counters=%s",
@@ -1172,22 +1138,6 @@ class RaceFlow:
             self.ctrl.click_xyxy_center(square["xyxy"], clicks=1)
             time.sleep(0.2)
             logger_uma.info("[race] Clicked race square")
-
-        # Store race name for result logging
-        self._last_race_name = desired_race_name or reason
-
-        # Log race start
-        if self._telemetry:
-            try:
-                self._telemetry.log_race_start(
-                    turn=None,
-                    race_name=self._last_race_name,
-                    prioritize_g1=prioritize_g1,
-                    is_goal=is_g1_goal,
-                    select_style=select_style,
-                )
-            except Exception:
-                pass
 
         # 3) Click green 'RACE' on the list (prefer bottom-most; OCR 'RACE' if needed)
         if not self.waiter.click_when(
