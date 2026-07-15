@@ -168,10 +168,43 @@ def _get_spirit_clf():
         _SPIRIT_CLF = None
     return _SPIRIT_CLF
 
+# Extreme Spirit Burst (July 2026) color heuristic. Calibrated qualitatively from
+# in-game screenshots of the "Extreme Spirit Burst" trigger banner and its trainer-held
+# flame effect: a bright, highly-saturated magenta/pink glow with a warm orange-yellow
+# core, visually distinct from the existing blue (cool hue) and white (low saturation)
+# spirit classes the trained CNN already knows. UNCALIBRATED against the actual small
+# in-game icon crop (only the animated banner/effect was confirmed) -- retune
+# PURPLE_HUE_MIN/MAX, PURPLE_SAT_MIN, PURPLE_VAL_MIN, PURPLE_FRAC_MIN below once real
+# icon crops are available, or replace with a proper 3-class classifier retrain.
+PURPLE_HUE_MIN = 140   # OpenCV H channel (0-179), magenta/pink band
+PURPLE_HUE_MAX = 172
+PURPLE_SAT_MIN = 90    # high saturation to avoid muted pink UI chrome / skin tones
+PURPLE_VAL_MIN = 120   # bright/glowing, not a dark muted pink
+PURPLE_FRAC_MIN = 0.15 # fraction of crop pixels that must match to call it purple
+
+
+def _detect_extreme_spirit_purple(crop_rgb) -> bool:
+    """Heuristic pre-check for Extreme Spirit Burst; see module-level constants above."""
+    hsv = cv2.cvtColor(crop_rgb, cv2.COLOR_RGB2HSV)
+    hue, sat, val = hsv[..., 0], hsv[..., 1], hsv[..., 2]
+    mask = (
+        (hue >= PURPLE_HUE_MIN) & (hue <= PURPLE_HUE_MAX)
+        & (sat >= PURPLE_SAT_MIN) & (val >= PURPLE_VAL_MIN)
+    )
+    frac = float(np.count_nonzero(mask)) / max(1, mask.size)
+    return frac >= PURPLE_FRAC_MIN
+
+
 def _classify_spirit_icon(frame_bgr, xyxy, *, threshold: float = 0.51):
     """
-    Returns dict with keys: spirit_label ('spirit_blue'|'spirit_white'|'unknown'),
-    spirit_color ('blue'|'white'|'unknown'), spirit_confidence (0..1).
+    Returns dict with keys: spirit_label ('spirit_blue'|'spirit_white'|'spirit_purple_heuristic'|'unknown'),
+    spirit_color ('blue'|'white'|'purple'|'unknown'), spirit_confidence (0..1).
+
+    'purple' identifies Extreme Spirit Burst (added July 2026), detected via
+    _detect_extreme_spirit_purple() below since the trained classifier bundle only
+    knows 'spirit_blue'/'spirit_white' (see models/unity_spirit_classes.json) and has
+    never seen the purple icon. The heuristic runs first and short-circuits before the
+    CNN; if it doesn't fire, behavior is unchanged from before ESB support was added.
     """
     clf = _get_spirit_clf()
     if clf is None or not xyxy:
@@ -186,6 +219,14 @@ def _classify_spirit_icon(frame_bgr, xyxy, *, threshold: float = 0.51):
         return {"spirit_label": "unknown", "spirit_color": "unknown", "spirit_confidence": 0.0}
 
     crop_rgb = cv2.cvtColor(frame_bgr[y1:y2, x1:x2], cv2.COLOR_BGR2RGB)
+
+    if _detect_extreme_spirit_purple(crop_rgb):
+        return {
+            "spirit_label": "spirit_purple_heuristic",
+            "spirit_color": "purple",
+            "spirit_confidence": 1.0,
+        }
+
     pil_img = Image.fromarray(crop_rgb)
 
     try:
@@ -198,7 +239,14 @@ def _classify_spirit_icon(frame_bgr, xyxy, *, threshold: float = 0.51):
         logger_uma.debug("Spirit color predict error: %s", e)
         label, conf = "unknown", 0.0
 
-    color = "blue" if label == "spirit_blue" else ("white" if label == "spirit_white" else "unknown")
+    if label == "spirit_blue":
+        color = "blue"
+    elif label == "spirit_white":
+        color = "white"
+    elif label == "spirit_purple":
+        color = "purple"
+    else:
+        color = "unknown"
     return {"spirit_label": label, "spirit_color": color, "spirit_confidence": conf}
 
 
