@@ -67,3 +67,6 @@ dev_train.ipynb
 
 capture_steam.py
 change.patch
+
+# Personal local telemetry logs (feature removed; not to be committed)
+datasets/telemetry/
