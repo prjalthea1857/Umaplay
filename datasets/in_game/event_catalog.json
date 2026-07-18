@@ -7051,11 +7051,11 @@
     "event_kind": "random"
   },
   {
-    "key": "support/Matikanefukukitaru/SPD/SR/Mystery Fortune Ritual!",
-    "key_step": "support/Matikanefukukitaru/SPD/SR/Mystery Fortune Ritual!#s1",
+    "key": "support/Matikanefukukitaru/SPD/SSR/Mystery Fortune Ritual!",
+    "key_step": "support/Matikanefukukitaru/SPD/SSR/Mystery Fortune Ritual!#s1",
     "type": "support",
     "name": "Matikanefukukitaru",
-    "rarity": "SR",
+    "rarity": "SSR",
     "attribute": "SPD",
     "event_name": "Mystery Fortune Ritual!",
     "chain_step": 1,
@@ -7082,19 +7082,19 @@
       ]
     },
     "title_norm": "mystery fortune ritual!",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png"
     ],
     "event_kind": "chain"
   },
   {
-    "key": "support/Matikanefukukitaru/SPD/SR/Fortune Favors the Friends!",
-    "key_step": "support/Matikanefukukitaru/SPD/SR/Fortune Favors the Friends!#s2",
+    "key": "support/Matikanefukukitaru/SPD/SSR/Fortune Favors the Friends!",
+    "key_step": "support/Matikanefukukitaru/SPD/SSR/Fortune Favors the Friends!#s2",
     "type": "support",
     "name": "Matikanefukukitaru",
-    "rarity": "SR",
+    "rarity": "SSR",
     "attribute": "SPD",
     "event_name": "Fortune Favors the Friends!",
     "chain_step": 2,
@@ -7121,19 +7121,19 @@
       ]
     },
     "title_norm": "fortune favors the friends!",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png"
     ],
     "event_kind": "chain"
   },
   {
-    "key": "support/Matikanefukukitaru/SPD/SR/Maximum Spirituality",
-    "key_step": "support/Matikanefukukitaru/SPD/SR/Maximum Spirituality#s1",
+    "key": "support/Matikanefukukitaru/SPD/SSR/Maximum Spirituality",
+    "key_step": "support/Matikanefukukitaru/SPD/SSR/Maximum Spirituality#s1",
     "type": "support",
     "name": "Matikanefukukitaru",
-    "rarity": "SR",
+    "rarity": "SSR",
     "attribute": "SPD",
     "event_name": "Maximum Spirituality",
     "chain_step": 1,
@@ -7157,19 +7157,19 @@
       ]
     },
     "title_norm": "maximum spirituality",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png"
     ],
     "event_kind": "random"
   },
   {
-    "key": "support/Matikanefukukitaru/SPD/SR/When Piety and Kindness Intersect",
-    "key_step": "support/Matikanefukukitaru/SPD/SR/When Piety and Kindness Intersect#s1",
+    "key": "support/Matikanefukukitaru/SPD/SSR/When Piety and Kindness Intersect",
+    "key_step": "support/Matikanefukukitaru/SPD/SSR/When Piety and Kindness Intersect#s1",
     "type": "support",
     "name": "Matikanefukukitaru",
-    "rarity": "SR",
+    "rarity": "SSR",
     "attribute": "SPD",
     "event_name": "When Piety and Kindness Intersect",
     "chain_step": 1,
@@ -7189,10 +7189,10 @@
       ]
     },
     "title_norm": "when piety and kindness intersect",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SSR.png"
     ],
     "event_kind": "random"
   },

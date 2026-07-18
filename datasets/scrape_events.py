@@ -10,7 +10,7 @@ Unified UMA MUSUME Event Scraper
 - JSON extras: translate skill/status IDs (skills.json / status.json), period filter, optional image download.
 
 Usage (single line examples):
-  cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
+  cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SSR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
   
   better:
 

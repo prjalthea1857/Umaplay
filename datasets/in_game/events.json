@@ -5327,9 +5327,9 @@
   {
     "type": "support",
     "name": "Matikanefukukitaru",
-    "rarity": "SR",
+    "rarity": "SSR",
     "attribute": "SPD",
-    "id": "Matikanefukukitaru_SPD_SR",
+    "id": "Matikanefukukitaru_SPD_SSR",
     "choice_events": [
       {
         "type": "chain",

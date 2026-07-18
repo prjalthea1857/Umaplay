@@ -113,7 +113,7 @@ We produce an **array** of entries (support or trainee):
 **One-liner run (as requested):**
 
 ```
-cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
+cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SSR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
 ```
 
 **Flags:**
@@ -124,7 +124,7 @@ cls && python scrape_events.py --html-file events_full_html.txt --support-defaul
   * Split from the **end** so names may contain hyphens.
   * Examples:
 
-    * `Matikanefukukitaru-SR-SPD`
+    * `Matikanefukukitaru-SSR-SPD`
     * `Seeking the Pearl-SR-GUTS`
 * `--out` — output JSON file path.
 * `--debug` — verbose logs for troubleshooting.
@@ -209,7 +209,7 @@ If you want a “best-case” rather than “average” for multi-outcome option
 
 ## 7) Example: Expected Output (abridged)
 
-### Matikanefukukitaru (SR/SPD)
+### Matikanefukukitaru (SSR/SPD)
 
 > Note: earlier revisions of this doc listed a fabricated "Guidance and Friends"
 > chain event with attribute WIT for this card — that example was wrong and, at
@@ -263,7 +263,7 @@ If you want a “best-case” rather than “average” for multi-outcome option
 2. Run:
 
 ```
-cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
+cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SSR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
 ```
 
 3. Inspect logs for:
