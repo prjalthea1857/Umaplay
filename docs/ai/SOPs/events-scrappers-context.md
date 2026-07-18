@@ -113,7 +113,7 @@ We produce an **array** of entries (support or trainee):
 **One-liner run (as requested):**
 
 ```
-cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-WIT|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
+cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
 ```
 
 **Flags:**
@@ -124,7 +124,7 @@ cls && python scrape_events.py --html-file events_full_html.txt --support-defaul
   * Split from the **end** so names may contain hyphens.
   * Examples:
 
-    * `Matikanefukukitaru-SR-WIT`
+    * `Matikanefukukitaru-SR-SPD`
     * `Seeking the Pearl-SR-GUTS`
 * `--out` — output JSON file path.
 * `--debug` — verbose logs for troubleshooting.
@@ -209,15 +209,28 @@ If you want a “best-case” rather than “average” for multi-outcome option
 
 ## 7) Example: Expected Output (abridged)
 
-### Matikanefukukitaru (SR/WIT)
+### Matikanefukukitaru (SR/SPD)
 
-* **Chain step 2**: *Guidance and Friends*
+> Note: earlier revisions of this doc listed a fabricated "Guidance and Friends"
+> chain event with attribute WIT for this card — that example was wrong and, at
+> one point, got copy-pasted directly into `datasets/in_game/events.json` instead
+> of running the scraper against real data. Verified against the live GameTora
+> page (`__NEXT_DATA__` JSON blob) as of 2026-07: she's SPD, and her three chain
+> events are below. Always cross-check `--support-defaults` attribute/rarity
+> against the live page before trusting a worked example.
 
-  * `"1"`: `{ "skill_pts": 45, "bond": 5 }`
-  * `"2"`: two possible outcomes:
+* **Chain step 1**: *Mystery Fortune Ritual!*
 
-    * `{ "energy": 10, "mood": 1, "hints": ["Right-Handed ○"], "bond": 5 }`
-    * `{ "energy": -20, "hints": ["Right-Handed ○"], "bond": 5 }`
+  * `"1"`: two possible outcomes (Randomly either):
+
+    * `{ "speed": 7, "stamina": 7, "power": 7, "guts": 7, "wit": 7, "bond": 7 }`
+    * `{ "wit": 4 }`
+  * `"2"`: `{ "energy": 5, "bond": 5 }`
+* **Chain step 2**: *Fortune Favors the Friends!* — same shape as step 1.
+* **Chain step 3**: *Finding Miraculous Joy!* — single option `"1"` with three
+  Randomly-either outcomes (no Top/Bot split), each granting all stats +7 plus a
+  `Super Lucky Seven`/`Lucky Seven` hint (skill ids 201561/201562) at varying
+  levels, or just skill_pts + a `Lucky Seven (+3)` hint.
 * **Random**: *Maximum Spirituality*
 
   * `"1"`: `{ "wit": 5, "skill_pts": 15, "bond": 5 }`
@@ -250,7 +263,7 @@ If you want a “best-case” rather than “average” for multi-outcome option
 2. Run:
 
 ```
-cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-WIT|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
+cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
 ```
 
 3. Inspect logs for:
@@ -318,11 +331,12 @@ cls && python scrape_events.py --html-file events_full_html.txt --support-defaul
 
 ## 13) Sanity Tests (copy/paste)
 
-* **Matikanefukukitaru** “Guidance and Friends”
+* **Matikanefukukitaru** “Mystery Fortune Ritual!” (chain step 1, attribute SPD)
 
-  * Expect chain_step = 2; options keys `"1"` and `"2"` (not `"3"`).
-  * `"2"` should contain **two outcomes** split by “Randomly either”/“or”.
-  * Hints array should include `"Right-Handed ○"`.
+  * Expect chain_step = 1; options keys `"1"` and `"2"` (not `"3"`).
+  * `"1"` should contain **two outcomes** split by “Randomly either”/“or”
+    (`all stats +7 / bond +7` vs. `wit +4`).
+  * `"2"` is a single outcome: `energy +5`, `bond +5`.
 * **Seeking the Pearl** “Full-Power Thinking!”
 
   * `"1"`: `wit +20`

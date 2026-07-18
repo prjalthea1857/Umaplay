@@ -7051,55 +7051,90 @@
     "event_kind": "random"
   },
   {
-    "key": "support/Matikanefukukitaru/WIT/SR/Guidance and Friends",
-    "key_step": "support/Matikanefukukitaru/WIT/SR/Guidance and Friends#s2",
+    "key": "support/Matikanefukukitaru/SPD/SR/Mystery Fortune Ritual!",
+    "key_step": "support/Matikanefukukitaru/SPD/SR/Mystery Fortune Ritual!#s1",
     "type": "support",
     "name": "Matikanefukukitaru",
     "rarity": "SR",
-    "attribute": "WIT",
-    "event_name": "Guidance and Friends",
+    "attribute": "SPD",
+    "event_name": "Mystery Fortune Ritual!",
+    "chain_step": 1,
+    "default_preference": 1,
+    "options": {
+      "1": [
+        {
+          "speed": 7,
+          "stamina": 7,
+          "power": 7,
+          "guts": 7,
+          "wit": 7,
+          "bond": 7
+        },
+        {
+          "wit": 4
+        }
+      ],
+      "2": [
+        {
+          "energy": 5,
+          "bond": 5
+        }
+      ]
+    },
+    "title_norm": "mystery fortune ritual!",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
+    "phash64": 15432696853800837851,
+    "image_variants": [
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
+    ],
+    "event_kind": "chain"
+  },
+  {
+    "key": "support/Matikanefukukitaru/SPD/SR/Fortune Favors the Friends!",
+    "key_step": "support/Matikanefukukitaru/SPD/SR/Fortune Favors the Friends!#s2",
+    "type": "support",
+    "name": "Matikanefukukitaru",
+    "rarity": "SR",
+    "attribute": "SPD",
+    "event_name": "Fortune Favors the Friends!",
     "chain_step": 2,
     "default_preference": 1,
     "options": {
       "1": [
         {
-          "skill_pts": 45,
-          "bond": 5
+          "speed": 7,
+          "stamina": 7,
+          "power": 7,
+          "guts": 7,
+          "wit": 7,
+          "bond": 7
+        },
+        {
+          "wit": 4
         }
       ],
       "2": [
         {
-          "energy": 10,
-          "mood": 1,
-          "hints": [
-            "Right-Handed ○"
-          ],
-          "bond": 5
-        },
-        {
-          "energy": -20,
-          "hints": [
-            "Right-Handed ○"
-          ],
+          "energy": 5,
           "bond": 5
         }
       ]
     },
-    "title_norm": "guidance and friends",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_WIT_SR.png",
+    "title_norm": "fortune favors the friends!",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_WIT_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
     ],
     "event_kind": "chain"
   },
   {
-    "key": "support/Matikanefukukitaru/WIT/SR/Maximum Spirituality",
-    "key_step": "support/Matikanefukukitaru/WIT/SR/Maximum Spirituality#s1",
+    "key": "support/Matikanefukukitaru/SPD/SR/Maximum Spirituality",
+    "key_step": "support/Matikanefukukitaru/SPD/SR/Maximum Spirituality#s1",
     "type": "support",
     "name": "Matikanefukukitaru",
     "rarity": "SR",
-    "attribute": "WIT",
+    "attribute": "SPD",
     "event_name": "Maximum Spirituality",
     "chain_step": 1,
     "default_preference": 2,
@@ -7122,20 +7157,20 @@
       ]
     },
     "title_norm": "maximum spirituality",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_WIT_SR.png",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_WIT_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
     ],
     "event_kind": "random"
   },
   {
-    "key": "support/Matikanefukukitaru/WIT/SR/When Piety and Kindness Intersect",
-    "key_step": "support/Matikanefukukitaru/WIT/SR/When Piety and Kindness Intersect#s1",
+    "key": "support/Matikanefukukitaru/SPD/SR/When Piety and Kindness Intersect",
+    "key_step": "support/Matikanefukukitaru/SPD/SR/When Piety and Kindness Intersect#s1",
     "type": "support",
     "name": "Matikanefukukitaru",
     "rarity": "SR",
-    "attribute": "WIT",
+    "attribute": "SPD",
     "event_name": "When Piety and Kindness Intersect",
     "chain_step": 1,
     "default_preference": 2,
@@ -7154,10 +7189,10 @@
       ]
     },
     "title_norm": "when piety and kindness intersect",
-    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_WIT_SR.png",
+    "image_path": "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png",
     "phash64": 15432696853800837851,
     "image_variants": [
-      "web\\public\\events\\support\\Matikanefukukitaru_WIT_SR.png"
+      "web\\public\\events\\support\\Matikanefukukitaru_SPD_SR.png"
     ],
     "event_kind": "random"
   },

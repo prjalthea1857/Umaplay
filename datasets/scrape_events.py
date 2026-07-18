@@ -10,7 +10,7 @@ Unified UMA MUSUME Event Scraper
 - JSON extras: translate skill/status IDs (skills.json / status.json), period filter, optional image download.
 
 Usage (single line examples):
-  cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-WIT|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
+  cls && python scrape_events.py --html-file events_full_html.txt --support-defaults "Matikanefukukitaru-SR-SPD|Seeking the Pearl-SR-GUTS" --out supports_events.json --debug
   
   better:
 
@@ -684,6 +684,7 @@ def parse_effects_from_event_dict(event_dict: Dict[str, Any], skill_map: Dict[st
     Gametora 'r' list:
       di = divider (starts a new outcome)
       sp/st/po/gu/in = stats, en = energy, pt = skill pts, bo = bond
+      5s = all five stats set to the same value ("All stats +N")
       sk = single hint (id in 'd', amount in 'v')
       sr = hint roll (list of {d: skill_id, v: +n})
       se = status id (in 'd')
@@ -725,6 +726,15 @@ def parse_effects_from_event_dict(event_dict: Dict[str, Any], skill_map: Dict[st
             has_data = True
         elif t == "in":
             cur["wit"] = _to_int_if_plain_number(v)
+            has_data = True
+        elif t == "5s":
+            # "All stats +N": set all five stats to the same value.
+            n = _to_int_if_plain_number(v)
+            cur["speed"] = n
+            cur["stamina"] = n
+            cur["power"] = n
+            cur["guts"] = n
+            cur["wit"] = n
             has_data = True
         elif t == "en":
             cur["energy"] = _to_int_if_plain_number(v)
