@@ -133,8 +133,18 @@ def _normalize_effect_for_export(eff: Dict[str, Any]) -> Dict[str, Any]:
         flattened: List[str] = []
         seen: set[str] = set()
         for hint in out["hints"]:
-            parts = [p.strip() for p in str(hint).split("/") if p.strip()]
-            for part in parts:
+            s = str(hint)
+            # Only split on "/" in the name portion (e.g. "NameA / NameB (+1)");
+            # a "/" inside the trailing "(...)" is a probabilistic amount range
+            # (e.g. "(+1/+3)") and must stay intact.
+            m = re.match(r"^(.*?)(\s*\([^()]*\))?$", s)
+            base = (m.group(1) if m else s).strip()
+            suffix = (m.group(2) if m else "") or ""
+            for name_part in base.split("/"):
+                name_part = name_part.strip()
+                if not name_part:
+                    continue
+                part = f"{name_part}{suffix}".strip()
                 if part and part not in seen:
                     seen.add(part)
                     flattened.append(part)

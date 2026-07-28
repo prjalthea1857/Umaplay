@@ -3988,5 +3988,35 @@
     "color_class": "geDDHx",
     "rarity": "gold",
     "grade_symbol": null
+  },
+  {
+    "id": 202371,
+    "icon_filename": null,
+    "icon_src": null,
+    "name": "Unstoppable",
+    "description": "Increase velocity mid-race. (Pace Chaser)",
+    "color_class": null,
+    "rarity": null,
+    "grade_symbol": null
+  },
+  {
+    "id": 202372,
+    "icon_filename": null,
+    "icon_src": null,
+    "name": "On the Attack",
+    "description": "Slightly increase velocity mid-race. (Pace Chaser)",
+    "color_class": null,
+    "rarity": null,
+    "grade_symbol": null
+  },
+  {
+    "id": 201902,
+    "icon_filename": null,
+    "icon_src": null,
+    "name": "Head-On",
+    "description": "Slightly increase acceleration when positioned toward the front in the early part of late-race. (Pace Chaser)",
+    "color_class": null,
+    "rarity": null,
+    "grade_symbol": null
   }
 ]
