@@ -888,8 +888,11 @@ def fetch_and_parse_cards(slugs: List[str], card_type: str, skill_lookup: Dict[s
                 img_tag = img_tag.find("span").find("img") if img_tag.find("span") else None
             img_url = None
             if img_tag and img_tag.get('src'):
-                cleaned_src = str(img_tag['src']).lstrip('/')
-                img_url = BASE_URL + '/' + cleaned_src
+                raw_src = str(img_tag['src'])
+                if raw_src.startswith("http://") or raw_src.startswith("https://"):
+                    img_url = raw_src
+                else:
+                    img_url = BASE_URL + '/' + raw_src.lstrip('/')
                 try:
                     ir = requests.get(img_url, timeout=12); ir.raise_for_status()
                     ext = os.path.splitext(img_url.split('?')[0])[-1] or ".png"
